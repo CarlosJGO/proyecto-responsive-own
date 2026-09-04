@@ -1,0 +1,190 @@
+Se necesita tener instalado:
+
+Python 3.12 o superior
+Git
+Node.js y npm (para el frontend, según el framework utilizado)
+Un runtime de contenedores:
+Linux: Podman + podman-compose
+Windows: Docker Desktop (incluye Docker Compose) PowerShell=winget install --id Docker.DockerDesktop -e | comprobar: wsl --version y si no wsl --install
+
+El archivo requirements.txt contiene únicamente las dependencias de
+Python del backend. No instala Python, Docker, Podman ni Compose.
+
+========================================================================
+INSTRUCCIONES PARA PONER EN MARCHA EL PROYECTO (DJANGO + FRONTEND)
+==================================================================
+
+1. ESTRUCTURA DEL PROYECTO
+
+---
+
+ClaseManual 29-08/
+├── compose.yml
+├── backend/
+│   ├── core/
+│   ├── productos/
+│   ├── .env
+│   ├── .env.example
+│   ├── .venv/
+│   ├── manage.py
+│   └── requirements.txt
+├── frontend/
+└── instrucciones.txt
+
+El entorno virtual (.venv) y el archivo .env son locales y no deben
+subirse al repositorio.
+
+2. CONFIGURACIÓN INICIAL
+
+---
+
+Después de clonar el proyecto:
+
+```
+cd "ClaseManual 29-08"
+```
+
+Crear el archivo de configuración:
+
+```
+cp backend/.env.example backend/.env
+```
+
+Editar backend/.env y colocar la contraseña de MySQL:
+
+```
+DB_NAME=ferreteria_db
+DB_USER=root
+DB_PASSWORD=TU_CONTRASEÑA
+DB_HOST=127.0.0.1
+DB_PORT=3307
+```
+
+## 3. ENTORNO VIRTUAL
+
+Entrar al backend:
+
+```
+cd backend
+```
+
+Linux/macOS:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Fish:
+
+```
+python -m venv .venv
+source .venv/bin/activate.fish
+```
+
+Windows PowerShell:
+
+```
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Instalar dependencias:
+
+```
+pip install -r requirements.txt
+```
+
+## 4. BASE DE DATOS MYSQL
+
+Se utiliza MySQL 8.4 mediante Compose.
+
+Desde la raíz del proyecto:
+
+```
+podman-compose --env-file backend/.env up -d
+```
+
+O utilizando Docker:
+
+```
+docker compose --env-file backend/.env up -d
+```
+
+La base de datos utiliza el puerto 3307.
+
+5. INICIAR DJANGO
+
+---
+
+Desde backend, con el entorno virtual activado:
+
+```
+python manage.py migrate
+python manage.py runserver
+```
+
+Backend:
+
+```
+http://127.0.0.1:8000/
+```
+
+## 6. FRONTEND
+
+El frontend ya incluye un catálogo responsivo en HTML, CSS y JavaScript.
+Para servirlo desde la raíz del proyecto, en otra terminal ejecuta:
+
+```
+cd frontend
+python -m http.server 5500
+```
+
+Después abre `http://127.0.0.1:5500/`. El catálogo consume los productos
+desde `http://127.0.0.1:8000/api/productos/`.
+
+Endpoints disponibles:
+
+```
+GET /api/health/
+GET /api/productos/
+GET /api/categorias/
+```
+
+7. COMANDOS ÚTILES
+
+---
+
+Crear superusuario:
+
+```
+python manage.py createsuperuser
+```
+
+Crear migraciones:
+
+```
+python manage.py makemigrations
+```
+
+Aplicar migraciones:
+
+```
+python manage.py migrate
+```
+
+Instalar dependencias:
+
+```
+pip install -r requirements.txt
+```
+
+## NOTAS
+
+* .env contiene configuración y contraseñas locales; no subirlo.
+* .env.example es la plantilla que debe mantenerse en el repositorio.
+* .venv es específico de cada sistema operativo; no subirlo.
+* MySQL utiliza un volumen persistente mediante Compose.
+* La app `productos` crea sus tablas con `python manage.py migrate`.
+* El archivo ferreteria_db.sql, si se utiliza para restaurar datos,
+  es un backup local y no debe subirse al repositorio.

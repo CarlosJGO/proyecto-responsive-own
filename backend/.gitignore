@@ -1,0 +1,12 @@
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local environment and generated files
+.venv/
+venv/
+.env
+db.sqlite3
+media/
+*.log
