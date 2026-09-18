@@ -7,3 +7,4 @@ router.register('categorias', CategoriaViewSet, basename='categoria')
 router.register('productos', ProductoViewSet, basename='producto')
 
 urlpatterns = router.urls
+
