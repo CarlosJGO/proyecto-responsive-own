@@ -25,6 +25,10 @@ from productos.views import (
     proveedor_delete,
     proveedor_list,
     proveedor_update,
+    categoria_create,
+    categoria_delete,
+    categoria_list,
+    categoria_update,
 )
 
 urlpatterns = [
@@ -35,6 +39,11 @@ urlpatterns = [
     path('proveedores/nuevo/', proveedor_create, name='proveedor_create'),
     path('proveedores/<int:pk>/editar/', proveedor_update, name='proveedor_update'),
     path('proveedores/<int:pk>/eliminar/', proveedor_delete, name='proveedor_delete'),
+    
+    path('categorias/', categoria_list, name='categoria_list'),
+    path('categorias/nuevo/', categoria_create, name='categoria_create'),
+    path('categorias/<int:pk>/editar/', categoria_update, name='categoria_update'),
+    path('categorias/<int:pk>/eliminar/', categoria_delete, name='categoria_delete'),
 ]
 
 if settings.DEBUG:

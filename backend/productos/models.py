@@ -1,5 +1,5 @@
 from django.db import models
-
+#aca se definen los modelos de la base de datos, osea las tablas por asi decirlo
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)

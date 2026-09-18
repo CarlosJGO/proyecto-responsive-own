@@ -3,18 +3,17 @@ from rest_framework import filters, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import ProveedorForm
+from .forms import ProveedorForm, CategoriaForm
 from .models import Categoria, Producto, Proveedor
 
-
-from .models import Categoria, Producto
 from .serializers import CategoriaSerializer, ProductoSerializer
 
+#las views son las funciones que se llaman cuando se llama a una url
+#las views se llaman desde el archivo urls.py
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
-
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
@@ -28,11 +27,10 @@ class ProductoViewSet(viewsets.ModelViewSet):
 def health_check(request):
     return Response({'status': 'ok', 'app': 'ferreteria-backend'})
 
-
+##########################################################proveedores
 def proveedor_list(request):
     proveedores = Proveedor.objects.all()
     return render(request, 'proveedor_list.html', {'proveedores': proveedores})
-
 #post encripta la info que se manda en una url. metodo mas seguro porque no manda la info en la url. get manda la info en la url y es menos seguro
 def proveedor_create(request):
     if request.method == 'POST':
@@ -56,10 +54,44 @@ def proveedor_update(request, pk):
         form = ProveedorForm(instance=proveedor_instance)
     return render(request, 'proveedor_form.html', {'form': form})
 
-
 def proveedor_delete(request, pk):
     proveedor_instance = get_object_or_404(Proveedor, pk=pk)
     if request.method == 'POST':
         proveedor_instance.delete()
         return redirect('proveedor_list')
     return render(request, 'proveedor_confirm_delete.html', {'proveedor': proveedor_instance})
+
+##########################################################categorias
+def categoria_list(request):
+    categorias = Categoria.objects.all()
+    return render(request, 'categorias/categoria_list.html', {'categorias': categorias})
+
+def categoria_create(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('categoria_list')
+    else:
+        form = CategoriaForm()
+    return render(request, 'categorias/categoria_form.html', {'form': form})
+
+def categoria_update(request, pk):
+    categoria_instance = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, instance=categoria_instance)
+        if form.is_valid():
+            form.save()
+            return redirect('categoria_list')
+    else:
+        form = CategoriaForm(instance=categoria_instance)
+    return render(request, 'categorias/categoria_form.html', {'form': form})
+
+def categoria_delete(request, pk):
+    categoria_instance = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        categoria_instance.delete()
+        return redirect('categoria_list')
+    return render(request, 'categorias/categoria_confirm_delete.html', {'categoria': categoria_instance})
+
+
