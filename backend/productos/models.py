@@ -50,3 +50,30 @@ class Proveedor(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Cliente(models.Model):
+    nombre = models.CharField(max_length=150)
+    telefono = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    direccion = models.CharField(max_length=255, blank=True)
+    ciudad = models.CharField(max_length=100, blank=True)
+    estado = models.CharField(max_length=100, blank=True)
+    codigo_postal = models.CharField(max_length=20, blank=True)
+    pais = models.CharField(max_length=100, blank=True)
+    activo = models.BooleanField(default=True)
+    class Meta:
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+        ordering = ['nombre']
+
+    def __str__(self):
+        return self.nombre
+
+class Venta(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    class Meta:
+        verbose_name = 'Venta'
+        verbose_name_plural = 'Ventas'
+        ordering = ['-fecha']
